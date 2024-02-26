@@ -89,11 +89,11 @@ public class UserListPage extends AbstractComponents {
 
             e.printStackTrace();
         }
-        try {
-            moveToTheElementAndClickAndSendKeys(userNameTextFld, properties.getProperty("userName"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            moveToTheElementAndClickAndSendKeys(userNameTextFld, properties.getProperty("userName"));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         emailTextFld.sendKeys(properties.getProperty("email"));
         moveToTheElementAndClickAndSendKeys(departmentNameDropdown, "quality");
         Thread.sleep(2000);

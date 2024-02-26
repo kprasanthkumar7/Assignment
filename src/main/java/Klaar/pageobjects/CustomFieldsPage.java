@@ -9,13 +9,15 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.locators.RelativeLocator;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 public class CustomFieldsPage extends AbstractComponents {
 
     WebDriver driver;
 
-    public CustomFieldsPage(WebDriver driver) {
+    public CustomFieldsPage(WebDriver driver) throws IOException {
         super(driver);
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -50,7 +52,7 @@ public class CustomFieldsPage extends AbstractComponents {
     private WebElement userCompanyPageConfirm;
     @FindBy(xpath = "//*[@data-cy='settings-edit-user-company-info-custom-field-label']/*")
     private List<WebElement> addedCustomFlds;
-    private String nameFLdText = "Dumy";
+
     @FindBy(xpath = "//*[@class='ant-select-item-option-content'][text()='List']")
     private WebElement fieldTypeList;
     @FindBy(xpath = "//*[text()=' Add another Item ']")
@@ -70,7 +72,9 @@ public class CustomFieldsPage extends AbstractComponents {
     private List<WebElement> optionsInTheList;
     @FindBy(xpath = "//span[text()='Save']")
     private WebElement saveButtonInCompanySec;
-
+    @FindBy(xpath = "//*[text()='Company']")
+    private WebElement companyConfirm;
+    Properties properties = AbstractComponents.getProperties();
 
     public void functionalityOfCustomFieldsSec() throws InterruptedException {
         waitAndCheckElementIsPresent(userListPage);
@@ -79,7 +83,7 @@ public class CustomFieldsPage extends AbstractComponents {
         waitAndCheckElementIsPresent(customFieldConfirmation);
         addFieldButton.click();
         waitAndCheckElementIsPresent(addFieldPopupConfirm);
-        moveToTheElementAndClickAndSendKeys(nameFldOnPopup, nameFLdText);
+        moveToTheElementAndClickAndSendKeys(nameFldOnPopup,properties.getProperty("nameFLdText"));
         moveToTheElementAndClick(fieldTypeDropdown);
         waitAndCheckElementIsPresent(fieldTypeDate);
         moveToTheElementAndClick(fieldTypeDate);
@@ -87,6 +91,7 @@ public class CustomFieldsPage extends AbstractComponents {
         Thread.sleep(1000);
         waitAndCheckElementIsPresent(allUserSec);
         mouseOverOnElement(allUserSec);
+        Thread.sleep(1000);
         allUserSec.click();
 
     }
@@ -97,9 +102,9 @@ public class CustomFieldsPage extends AbstractComponents {
         moveToTheElementAndClick(userCompanyDetailsSec);
         waitAndCheckElementIsPresent(userCompanyPageConfirm);
         for (WebElement createdDateFld : addedCustomFlds) {
-            if (createdDateFld.getText().equalsIgnoreCase(nameFLdText)) {
+            if (createdDateFld.getText().contains(properties.getProperty("nameFLdText"))) {
                 scrollToElement(createdDateFld);
-                System.out.println("Custom Field of date type is created with name " + nameFLdText + "");
+                System.out.println("Custom Field of date type is created");
                 return true;
             }
         }
@@ -107,8 +112,7 @@ public class CustomFieldsPage extends AbstractComponents {
     }
     public void selectingFutureDate() throws InterruptedException, AWTException {
         for (WebElement createdDateFld : addedCustomFlds) {
-            if (createdDateFld.getText().equalsIgnoreCase(nameFLdText)) {
-
+            if (createdDateFld.getText().contains(properties.getProperty("nameFLdText"))) {
                 waitAndCheckElementIsPresent(createdDateFld);
                 WebElement element = driver.findElement(RelativeLocator.with(By.tagName("input")).toRightOf(createdDateFld));
                 moveToTheElementAndClick(element);
@@ -137,6 +141,7 @@ public class CustomFieldsPage extends AbstractComponents {
             //moveToTheElementAndClickAndSendKeys(nameFldOnPopup, listName);
             Thread.sleep(1000);
             waitAndCheckElementIsPresent(nameFldOnPopup);
+            Thread.sleep(1000);
             nameFldOnPopup.sendKeys(listName);
             moveToTheElementAndClick(fieldTypeDropdown);
             moveToTheElementAndClick(fieldTypeList);
@@ -172,8 +177,7 @@ public class CustomFieldsPage extends AbstractComponents {
             return false;
         }
     public void selectingOneOfTheOptionInTheList() throws InterruptedException {
-
-
+            waitAndCheckElementIsPresent(companyConfirm);
             for (WebElement createdList : addedCustomFlds) {
                 if (createdList.getText().equalsIgnoreCase(listName)) {
                     scrollToElement(createdList);
@@ -186,7 +190,9 @@ public class CustomFieldsPage extends AbstractComponents {
                     scrollToElement(saveButton);
                     saveButton.click();
                     waitAndCheckElementIsPresent(toastMessageConfirm);
+                    break;
                 }
+
             }
 
 
@@ -238,7 +244,7 @@ public class CustomFieldsPage extends AbstractComponents {
 //                    WebElement element = toggle.findElement(By.xpath("//following::*/following::*/*/*[@nztooltiptitle='Delete Field']/*"));
 //                    moveToTheElementAndClick(element);
                       WebElement ele = driver.findElement(By.xpath(locator));
-                      ele.click();
+                      moveToTheElementAndClick(ele);
                       waitAndCheckElementIsPresent(toastMessageConfirm);
                 }
             }
